@@ -31,7 +31,6 @@ export const delCartAPI = (ids) => {
 }
 
 //合并购物车
-//这里的data需要传过来一个数组
 export const mergeCartAPI = (data) => {
   return httpInstance({
     url: '/member/cart/merge',
