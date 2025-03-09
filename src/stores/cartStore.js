@@ -81,7 +81,19 @@ export const useCartStore = defineStore('cart', () => {
   //已选择商品价格
   const selectPrice = computed(() => cartList.value.filter(item => item.selected).reduce((sum, c) => sum + c.count * c.price, 0))
 
-  return { cartList, addCart, delCart, allCount, allPrice, singleCheck, isAll, allCheck, selectCount, selectPrice, clearCart, updateNewList }
+  return { cartList, 
+           addCart, 
+           delCart, 
+           allCount, 
+           allPrice, 
+           singleCheck, 
+           isAll, 
+           allCheck, 
+           selectCount, 
+           selectPrice, 
+           clearCart, 
+           updateNewList 
+          }
 },
   //持久化
   {
