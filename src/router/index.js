@@ -29,7 +29,7 @@ const router = createRouter({
                 { path: 'paycallback', component: PayBack },
                 { path: 'member', component: Member, 
                     children:[
-                        {path: '', component: UserInfo },// 点击我的订单时自动显示个人中心页面写法
+                        {path: '', component: UserInfo },// 点击我的订单时自动显示个人中心页面简写
                         { path: 'order', component: UserOrder }
                     ]
                  },

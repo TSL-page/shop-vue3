@@ -4,25 +4,74 @@ import HeaderCart from './HeaderCart.vue';
 
 const categoryStore = useCategoryStore()
 
+
+import { ref } from 'vue';
+import axios from 'axios';
+
+
+// DeepSeekAPI
+const apiKey = import.meta.env.VITE_DEEPSEEK_API_KEY;
+const baseURL = import.meta.env.VITE_DEEPSEEK_BASE_URL;
+
+// 搜索相关变量
+const query = ref(''); // 搜索输入
+const searchResults = ref(''); // 搜索结果
+const isLoading = ref(false); // 加载状态
+
+// 调用 DeepSeek API 进行搜索
+const search = async () => {
+  if (!query.value.trim()) return;
+
+  try {
+    isLoading.value = true;
+    const response = await axios.post(
+      `${baseURL}/chat/completions`,
+      {
+        model: "deepseek-chat",
+        messages: [{ role: "user", content: query.value }]
+      },
+      {
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    searchResults.value = response.data.choices[0]?.message?.content || "未找到结果";
+  } catch (error) {
+    console.error("搜索失败:", error);
+    searchResults.value = "搜索失败，请稍后再试";
+  } finally {
+    isLoading.value = false;
+  }
+}
 </script>
 
 <template>
-  <header class='app-header'>
+  <header class="app-header">
     <div class="container">
       <h1 class="logo">
-        <RouterLink to="/">小兔鲜</RouterLink>
+        <RouterLink to="/">乐购优品</RouterLink>
       </h1>
       <ul class="app-header-nav">
         <li class="home" v-for="item in categoryStore.categoryList" :key="item.id">
           <RouterLink active-class="active" :to="`/category/${item.id}`">{{ item.name }}</RouterLink>
         </li>
-
       </ul>
       <div class="search">
         <i class="iconfont icon-search"></i>
-        <input type="text" placeholder="搜一搜">
+        <input
+          type="text"
+          placeholder="搜一搜"
+          v-model="query"
+          @keyup.enter="search"
+        />
       </div>
-      <!-- 头部购物车 -->
+      <!-- 显示搜索结果 -->
+      <div v-if="searchResults" class="search-results">
+        <p v-if="isLoading">搜索中...</p>
+        <p v-else>{{ searchResults }}</p>
+      </div>
       <HeaderCart />
     </div>
   </header>
